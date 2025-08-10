@@ -1,25 +1,19 @@
+// src/router/index.ts
 import { Router } from 'express';
-import { signin, signup } from '../controllers/auth.js';
-import { authenticateToken } from '../middleware/userMiddleware.js';
-import { createContent, deleteContent, getContent } from '../controllers/content.js';
-import { getSharedBrain, toggleSharing } from '../controllers/share.js';
-
+import authRoutes from './authroute.js';
+import contentRoutes from './contentroute.js';
+import shareRoutes from './shareroute.js';
 
 const router = Router();
 
+// health check
 router.get('/', (_req, res) => {
   res.send('API is alive and running!');
 });
 
-router.post('/auth/signup', signup);
-router.post('/auth/signin', signin );
-
-router.post('/content', authenticateToken, createContent);
-router.get('/content', authenticateToken, getContent);
-router.delete('/content', authenticateToken, deleteContent);
-
-
-router.post('/brain/share', authenticateToken, toggleSharing);
-router.get('/brain/:shareLink', getSharedBrain);
+// mount route modules
+router.use('/auth', authRoutes);      // -> /api/v1/auth/signup
+router.use('/content', contentRoutes); // -> /api/v1/content
+router.use('/brain', shareRoutes);    // -> /api/v1/brain/share
 
 export default router;
